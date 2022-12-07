@@ -1,0 +1,1 @@
+These are my solutions to the advent of code puzzles. The golfed solutions were made with the help of the [Python Discord server](https://discord.gg/python).
