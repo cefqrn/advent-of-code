@@ -1,7 +1,7 @@
 from math import sin, cos, radians
 from re import findall
 
-from typing import Optional
+from typing import Optional, Sequence
 
 
 def get_input() -> str:
@@ -57,6 +57,16 @@ def get_lists(s: Optional[str]=None) -> list[list]:
     return list(map(str.split, get_nonempty_lines()))
 
 
+def transpose(l: Sequence[Sequence]) -> list[Sequence]:
+    if not l:
+        return list(l)
+
+    if isinstance(l[0], str):
+        return list(map(''.join, zip(*l)))
+    
+    return list(map(list, zip(*l)))
+
+
 def rotate_2d(x: int | float, y: int | float, angleDegrees: int | float):
     angleDegrees %= 360
     match angleDegrees:
@@ -84,12 +94,17 @@ if __name__ != "__main__":
     try:
         with open(_directory / "input") as f:
             input_string = f.read()
+            # get rid of trailing newline
+            # not strip / rstrip because of possible funky formatting
+            if input_string[-1] == '\n':
+                input_string = input_string[:-1]
     except FileNotFoundError:
         print("Could not open input.")
         input_string = ""
 
     blocks = get_blocks(input_string)
     lines = get_lines(input_string)
+    transposed_lines = transpose(lines)
     nonempty_lines = get_nonempty_lines(input_string)
 
     lists = get_lists(input_string)
