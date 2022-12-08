@@ -26,14 +26,14 @@ def get_lines(s: Optional[str]=None) -> list[str]:
     if s is None:
         s = input_string
 
-    return s.split('\n')
+    return s.splitlines()
 
 
 def get_nonempty_lines(s: Optional[str]=None) -> list[str]:
     if s is None:
         s = input_string
 
-    return list(filter(None, s.split('\n')))
+    return list(filter(None, get_lines(s)))
 
 
 def get_ints(s: Optional[str]=None) -> list[int]:
