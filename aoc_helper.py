@@ -9,8 +9,8 @@ from typing import Optional
 
 DIRNAME = os.path.dirname(__file__)
 HEADERS = {
-    "User-Agent": "cefqrn's pineapple script",
-    "Cookie": f"session={os.getenv('SESSION')}"
+    "User-Agent": "cefqrn's pineapple script ( contact: cefqrn@gmail.com )",
+    "Cookie": f"{os.getenv('COOKIE')}"
 }
 
 base_code = """import os
