@@ -13,10 +13,10 @@ HEADERS = {
     "Cookie": f"{os.getenv('COOKIE')}"
 }
 
-base_code = """import os
-import sys
+base_code = """import sys
+from pathlib import Path
 
-sys.path.append(os.path.join(sys.path[0], '../..'))
+sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from aoc_library import *
 """
@@ -99,7 +99,6 @@ def main(args: list[str]):
 
             setup(*map(int, args[2:]))
             
-
         case "f" | "fetch":
             if len(args) < 2:
                 raise ValueError(f"usage: {args[0]} fetch | f, [ <day>, <year>? ]?")
