@@ -1,14 +1,9 @@
 __all__ = [
-    'grid', 'infinity', 'parsing', 'pathfinding', 'point', 'intrange',
     'input_string', 'blocks', 'lines', 'lines_nonempty', 'lines_transposed',
     'lists', 'ints', 'floats'
 ]
 
-from . import pathfinding
-from . import infinity
 from . import parsing
-from . import point
-from . import intrange
 from . import grid
 
 class _CouldNotOpenInputError(Exception): ...
