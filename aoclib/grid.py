@@ -1,6 +1,10 @@
 from collections.abc import Sequence
 from typing import Union
 
+__all__ = [
+    "transpose", "print_grid", "is_valid_grid_coord"
+]
+
 
 def transpose(l: Sequence[Sequence]) -> list[Sequence]:
     if not l:

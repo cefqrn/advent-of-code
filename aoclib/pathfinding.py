@@ -7,6 +7,13 @@ from bisect import insort
 from collections.abc import Iterable, Sequence
 from typing import Callable, Optional, TypeVar, Union
 
+__all__ = [
+    "astar", "reconstruct_path",
+    "Neighborhood",
+    "SIDES", "CORNERS", "MOORE", "VON_NEUMANN"
+]
+
+
 T = TypeVar("T")
 Number = Union[int, float]  # Union instead of | to support 3.9 (pypy)
 

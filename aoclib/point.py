@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import NamedTuple, Optional
 from math import radians, sin, cos
 
+__all__ = ["Point"]
+
 
 class Point(NamedTuple):
     x: float = 0

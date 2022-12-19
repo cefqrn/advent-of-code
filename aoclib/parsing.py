@@ -1,7 +1,5 @@
 from re import findall
 
-input_string = ""
-
 
 def get_chunks(s: str, chunk_count: int) -> list[tuple[str, ...]]:
     return list(zip(*chunk_count*[iter(get_lines(s))]))

@@ -38,7 +38,8 @@ def move_rock(rock, direction):
         raise KeyError
 
 
-inp = cycle(open(0).read().rstrip())
+with open(0) as f:
+    inp = cycle(f.read().rstrip())
 
 max_height = 0
 

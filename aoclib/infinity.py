@@ -3,6 +3,11 @@ from __future__ import annotations
 from functools import total_ordering
 from typing import Any, Literal
 
+__all__ = [
+    "Infinity", "InfinityPositive", "InfinityNegative",  # classes
+    "INFINITY", "INFINITY_NEGATIVE"                      # constants
+]
+
 
 @total_ordering
 class Infinity:
