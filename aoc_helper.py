@@ -8,14 +8,8 @@ from typing import Optional
 
 DIRNAME = Path(__file__).parent
 
-base_code = """import sys
-from pathlib import Path
-
-sys.path.append(str(Path(__file__).parent.parent.parent))
-
-from aoclib.input import *
-from aoclib.parsing import *
-"""
+with open("template.py") as f:
+    code_template = f.read()
 
 
 class CouldNotFetchError(Exception):
@@ -110,7 +104,7 @@ class Problem:
         self.folder_path.mkdir(exist_ok=True)
 
         with open(self.folder_path / "initial.py", "w") as f:
-            f.write(base_code)
+            f.write(code_template)
         
         self.fetch_input()
 
