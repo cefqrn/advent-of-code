@@ -1,0 +1,196 @@
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.parent.parent))
+
+from aoclib.input import *
+from aoclib.parsing import *
+
+from aoclib.point import Point
+from re import *
+
+WIDTH = 50
+
+block_a, block_b = blocks
+
+
+grid = {}
+initial_position = None
+for i, line in enumerate(get_lines(block_a)):
+    for j, c in enumerate(line):
+        if initial_position is None and c == '.':
+            initial_position = Point(j, i)
+
+        grid[Point(j, i)] = c
+
+if initial_position is None:
+    raise ValueError
+
+position = initial_position
+
+
+class Side:
+    cube: list[Side] = []
+
+    def __init__(self, coord: Point):
+        self.coord = coord
+        self.adjacent: dict[int, tuple[Side, int]] = {}  # side then rotation
+
+    def find_adjacent(self):
+        for i, diff in enumerate([Point(0, -WIDTH), Point(WIDTH, 0), Point(0, WIDTH), Point(-WIDTH, 0)]):  # up right left down
+            if i in self.adjacent:
+                continue
+
+            new_coord = self.coord + diff
+            if new_coord not in grid or grid[new_coord] == ' ':
+                continue
+
+            new_side = Side(new_coord)
+            self.adjacent[i] = (new_side, 0)
+            new_side.adjacent[{0: 2, 1: 3, 2: 0, 3: 1}[i]] = (self, 0)
+
+            Side.cube.append(new_side)
+
+            new_side.find_adjacent()
+
+            for a, b in (0, 1), (1, 2), (2, 3), (3, 0):
+                if a not in self.adjacent or b not in self.adjacent:
+                    continue
+
+                if self.adjacent[a][1] or self.adjacent[b][1]:
+                    continue
+
+                key = {0:"up",1:"right",2:"down",3:"left"}
+
+                # print(self, ' setting ', self.adjacent[a], f"'s {key[b]} to ", self.adjacent[b], sep='')
+                # print(self, ' setting ', self.adjacent[b], f"'s {key[a]} to ", self.adjacent[a], sep='')
+
+                self.adjacent[a][0].adjacent[b] = self.adjacent[b][0], -1
+                self.adjacent[b][0].adjacent[a] = self.adjacent[a][0],  1
+
+    def __repr__(self):
+        return f"Side at {repr(self.coord)}"
+
+    @property
+    def up(self):
+        return self.adjacent[0][0]
+
+    @up.setter
+    def up(self, value):
+        self.adjacent[0] = value
+    
+    @property
+    def right(self):
+        return self.adjacent[1][0]
+
+    @right.setter
+    def right(self, value):
+        self.adjacent[1] = value
+    
+    @property
+    def down(self):
+        return self.adjacent[2][0]
+
+    @down.setter
+    def down(self, value):
+        self.adjacent[2] = value
+    
+    @property
+    def left(self):
+        return self.adjacent[3][0]
+
+    @left.setter
+    def left(self, value):
+        self.adjacent[3] = value
+        
+
+def move(position: Point, direction: Point) -> Point:
+    global curr_side
+    
+    try:
+        if direction[0]:
+            new_pos = Point((position + direction).x, position.y)
+            if new_pos not in grid or grid[new_pos] == ' ':
+                if direction.x > 0:
+                    side_index = 1
+                else:
+                    side_index = 3
+
+                new_side, angle = curr_side.adjacent[side_index]
+                new_pos = (position - curr_side.coord).rotated(90 * angle)
+                if grid[new_pos] == '#':
+                    raise ValueError
+
+                curr_side = new_side
+                direction = direction.rotated(angle * 90)
+        else:
+            new_pos = Point(position.x, (position + direction).y)
+            if new_pos not in grid or grid[new_pos] == ' ':
+                if direction.y > 0:
+                    side_index = 2
+                else:
+                    side_index = 0
+
+                new_side, angle = curr_side.adjacent[side_index]
+                new_pos = (position - curr_side.coord).rotated(90 * angle)
+                print(new_pos)
+
+                if grid[new_pos] == '#':
+                    raise ValueError
+
+                curr_side = new_side
+                direction = direction.rotated(angle * 90)
+
+        if grid[new_pos] == '#':
+            raise ValueError
+
+        return new_pos
+    except ValueError:  # hit wall
+        return position
+
+
+
+direction = Point(1, 0)
+
+curr_side = first_side = Side(initial_position)
+first_side.find_adjacent()
+
+first_side.up    = first_side.down.down.left.down, 3
+first_side.left  = first_side.down.down.left, 2
+
+first_side.right.up    = first_side.down.down.left.down, 0
+first_side.right.right = first_side.down.down.left, 2
+
+first_side.down.down.right = first_side.right, 1
+
+first_side.down.down.left.left = first_side, 2
+
+first_side.down.down.left.down.down = first_side.right, 3
+first_side.down.down.left.down.left   = first_side, 0
+
+# print(initial_position, direction, curr_side)
+for instruction in findall(r'[\d]+|[RL]', block_b):
+    if instruction.isnumeric():
+        dist = int(instruction)
+        for i in range(dist):
+            new_pos = move(position, direction)
+            if new_pos == position:
+                break
+            position = new_pos
+    else:
+        if instruction == 'R':
+            direction = direction.rotated(-90)
+        else:
+            direction = direction.rotated(90)
+
+    # print(f"{instruction:>2}", pos, direction)
+
+
+
+
+# column, row = pos + Point(1, 1)
+# facing = [Point(1, 0), Point(0, 1), Point(-1, 0), Point(0, -1)].index(direction)
+
+# print(1000 * row + 4 * column + facing)

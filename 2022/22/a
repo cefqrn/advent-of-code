@@ -1,0 +1,64 @@
+class Side:
+    def __init__(self, coord: Point):
+        self.coord = coord
+        self.adjacent: dict[int, Side] = {}
+
+    def find_adjacent(self):
+        for i, diff in enumerate([Point(0, -WIDTH), Point(WIDTH, 0), Point(0, WIDTH), Point(-WIDTH, 0)]):  # up right left down
+            if i in self.adjacent:
+                continue
+
+            new_coord = self.coord + diff
+            if new_coord not in grid or grid[new_coord] == ' ':
+                continue
+
+            new_side = Side(new_coord)
+            self.adjacent[i] = new_side
+            new_side.adjacent[{0: 2, 1: 3, 2: 0, 3: 1}[i]] = self
+
+            new_side.find_adjacent()
+
+        for a, b in (0, 1), (1, 2), (2, 3), (3, 0):
+            if a not in self.adjacent or b not in self.adjacent:
+                continue
+
+            key = {0:"up",1:"right",2:"down",3:"left"}
+
+            print(self, ' setting ', self.adjacent[a], f"'s {key[b]} to ", self.adjacent[b], sep='')
+            print(self, ' setting ', self.adjacent[b], f"'s {key[a]} to ", self.adjacent[a], sep='')
+
+            self.adjacent[a].adjacent[b] = self.adjacent[b]
+            self.adjacent[b].adjacent[a] = self.adjacent[a]
+
+    def __repr__(self):
+        return f"Side at {repr(self.coord)}"
+
+
+
+
+# new_side.update_adjacent()
+
+# def update_adjacent(self):
+#     for a, b in (0, 1), (1, 2), (2, 3), (3, 0):
+#         if a not in self.adjacent or b not in self.adjacent:
+#             continue
+
+#         a_target = (b - self.adjacent[a][1]) % 4
+#         b_target = (a - self.adjacent[b][1]) % 4
+
+#         rot_diff = 1 + a_target - b_target
+
+#         print(self)
+#         print(a, b, a_target, b_target)
+
+#         print()
+
+#         key = {0:"up",1:"right",2:"down",3:"left"}
+
+#         if a_target not in self.adjacent[a][0].adjacent:
+#             self.adjacent[a][0].adjacent[a_target] = (self.adjacent[b][0], -rot_diff)
+#             print(self, ' setting ', self.adjacent[a][0], f"'s {key[a_target]} to ", (self.adjacent[b][0], self.adjacent[b][1] -rot_diff), sep='')
+        
+#         if b_target not in self.adjacent[b][0].adjacent:
+#             self.adjacent[b][0].adjacent[b_target] = (self.adjacent[a][0],  rot_diff)
+#             print(self, ' setting ', self.adjacent[b][0], f"'s {key[b_target]} to ", (self.adjacent[a][0], self.adjacent[a][1] +rot_diff), sep='')
