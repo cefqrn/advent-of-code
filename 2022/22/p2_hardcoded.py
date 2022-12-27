@@ -15,10 +15,10 @@ from re import *
 
 WIDTH = 4
 
-UP = Point( 0, -1)
-DOWN = Point( 0,  1)
+UP     = Point( 0, -1)
+DOWN   = Point( 0,  1)
 RIGHT  = Point( 1,  0)
-LEFT  = Point(-1,  0)
+LEFT   = Point(-1,  0)
 
 
 def get_new_pos(position: Point, direction: Point) -> tuple[Point, Point]:
@@ -30,7 +30,7 @@ def get_new_pos(position: Point, direction: Point) -> tuple[Point, Point]:
         if position.y < 150:
             return Point(50, 49 - (position.y - 100)), RIGHT
         if position.y < 200:
-            return Point(49 - (position.y - 150), 0), DOWN
+            return Point(50 + (position.y - 150), 0), DOWN
 
     if direction == RIGHT:
         if position.y < 50:
@@ -91,16 +91,6 @@ if position is None:
     raise ValueError
 
 
-# from aoclib.grid import get_bounds
-# x_bounds, y_bounds = get_bounds(grid)
-# for y in range(y_bounds[0], y_bounds[1] + 1):
-#     for x in range(x_bounds[0], x_bounds[1] + 1):
-#         if (x, y) in grid:
-#             print(grid[(x, y)], end='')
-
-#     print()
-
-
 direction = Point(1, 0)
 for instruction in findall(r'[\d]+|[RL]', block_b):
     print(f"{instruction:>2}", position, direction)
@@ -122,3 +112,4 @@ print(1000 * row + 4 * column + facing)
 
 
 # not 177026 (too high)
+# not 26461  (too low)
