@@ -3,7 +3,7 @@ from pathlib import Path
 with open(Path(__file__).parent / "input") as f:
     data = f.read().rstrip()
 
-from re import finditer, Match, compile
+from re import findall, compile
 
 numbers = "zero, one, two, three, four, five, six, seven, eight, nine".split(", ")
 
@@ -15,7 +15,7 @@ for line in data.splitlines():
     values_1 = []
     values_2 = []
 
-    for m, in map(Match.groups, finditer(pattern, line)):
+    for m in findall(pattern, line):
         try:
             v = int(m)
         except ValueError:
