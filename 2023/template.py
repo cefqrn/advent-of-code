@@ -2,7 +2,7 @@ from contextlib import suppress
 from itertools import groupby
 from pathlib import Path
 
-with open(Path(__file__).parent / "input") as f:
+with (Path(__file__).parent / "input").open() as f:
     data = f.read().rstrip()
 
 lines = data.splitlines()
