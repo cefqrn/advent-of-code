@@ -22,8 +22,12 @@
 # *p,=open(0)
 # for i in',_':e=1;[e:=e*int(((p*p-4*l)**.5+p)//2*2-p+1)for p,l in zip(*(eval(i.join(e[9:].split())+',')for e in p))];print(e)
 
-# for i in',_':e=1;[e:=e*int(((p*p-4*l)**.5+p)//2*2-p+1)for p,l in zip(*(eval(i.join(e[9:].split())+',')for e in open(0)))];print(e)
-for i in',_':e=1;[e:=e*int(((p*p-4*l)**.5+p)//2*2-p+1)for p,l in zip(*(eval(i.join(e[9:].split())+',')for e in open(0)))];print(e)
+*p,=open(0)
+for i in',_':e=1;[e:=e*sum(l<i*(p-i)for i in range(p))for p,l in zip(*(eval(i.join(e[9:].split())+',')for e in p))];print(e)
+
+*p,=open(0)
+for i in',_':e=1;[e:=e*int(((p*p-4*l)**.5+p)//2*2-p+1)for p,l in zip(*(eval(i.join(e[9:].split())+',')for e in p))];print(e)
+
 
 # *p,=open(0)
 # for i in'n ':e=1;[e:=e*int((a:=((p*p-4*l)**.5+p)//2)+a-p+1)for p,l in zip(*(map(int,e[9:].replace(i,'').split())for e in p))];print(e)
