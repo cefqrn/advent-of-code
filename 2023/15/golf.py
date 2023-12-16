@@ -16,14 +16,20 @@
 #  for i in c:v+=1;q+=u*v*int(c[i][-1])
 # print(p,q)
 
-b=eval('{},'*256)
-p=q=u=0
-for s in input().split(','):d=s[:s.find('=')];k=0;*_,x,y,_=[k:=17*(k+ord(c))%256for c in s];p+=k;s>d+'-'!=exec("b[x][d]=s")or b[y].pop(d,0)
-for c in b:
- u+=1;v=0
- for i in c:v+=1;q+=u*v*int(c[i][-1])
-print(p,q)
+# b=eval('{},'*256)
+# p=q=u=0
+# for s in input().split(','):d=s[:s.find('=')];k=0;*_,x,y,_=[k:=17*(k+ord(c))%256for c in s];p+=k;s>d+'-'!=exec("b[x][d]=s")or b[y].pop(d,0)
+# for c in b:
+#  u+=1;v=0
+#  for i in c:v+=1;q+=u*v*int(c[i][-1])
+# print(p,q)
 
+
+i,g=input().split(','),globals()
+p=q=0
+for s in i:e='='in s;k=0;h=[k:=17*(k+ord(c))%256for c in s][~-~e];e>0!=exec(s+f'{h+1:03}')or g.pop(s[:~e],0);p+=k
+for k in [*g][17:]:s=g[k]%1000;i+=s,;q+=g[k]//999*s*i.count(s)
+print(p,q)
 
 # b=eval('{},'*256)
 # p=q=u=0
