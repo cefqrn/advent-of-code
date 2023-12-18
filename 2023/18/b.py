@@ -1,5 +1,5 @@
 from contextlib import suppress
-from itertools import groupby, chain
+from itertools import groupby
 from pathlib import Path
 
 with (Path(__file__).parent / "input").open() as f:
@@ -11,7 +11,7 @@ with suppress(ValueError):
     ints = [int(x) for x in data.split()]
 
 from functools import partial
-from itertools import pairwise
+from itertools import pairwise, chain
 from operator import mul
 
 # NESW URDL

@@ -1,5 +1,5 @@
 from contextlib import suppress
-from itertools import groupby, chain
+from itertools import groupby
 from pathlib import Path
 
 with (Path(__file__).parent / "input").open() as f:
