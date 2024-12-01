@@ -1,0 +1,46 @@
+#!/bin/bash
+
+: "${YEAR:=2024}"
+
+COOKIE_FILE=".cookie"
+
+INITIAL_FILE="a.py"
+TEMPLATE_FILE="template.py"
+
+# setup day
+# creates initial files for the specified day
+setup() {
+  day="$1"
+
+  mkdir -p "$day"
+  cp -n "$TEMPLATE_FILE" "$day/$INITIAL_FILE"
+}
+
+# fetch day
+# fetches input for the specified day
+fetch() {
+  day="$1"
+
+  # arithmetic expansion gets rid of leading 0s
+  input_url="https://adventofcode.com/$YEAR/day/$((day))/input"
+
+  # curl does allow for using a filename but it uses a format
+  # that's much more complicated than just key=value
+  # so... cat :D
+  cookie="$(cat "$COOKIE_FILE")"
+
+  curl -b "$cookie" "$input_url" > "$day/input"
+}
+
+format_day() {
+  printf "%02d" "$1"
+}
+
+day="$(format_day "${2:-$(date "+%d")}")"
+
+command="$1"
+case "$command" in
+  fetch | f) fetch "$day";;
+  setup | s) setup "$day";;
+  *) echo "unknown command";;
+esac
