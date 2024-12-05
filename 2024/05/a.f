@@ -66,9 +66,9 @@ variable rule-count 0 rule-count !
             over c@        \ i j *i *j
             swap           \ i j *j *i
             rot            \ i *j *i j
-            c!             \ i *j       (j stored in i)
+            c!             \ i *j       (*i stored in j)
             swap           \ *j i
-            c!             \            (prev i stored in j)
+            c!             \            (prev *j stored in i)
          then
       loop
    loop
