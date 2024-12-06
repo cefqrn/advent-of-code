@@ -9,11 +9,11 @@ def rotate_grid(grid):
 
 def rotate_pos(w, h, x, y, n=1):
     """rotate position on grid clockwise n times"""
-    for _ in range(n % 4):
-        x, y = (h-1) - y, x
-        w, h = h, w
-
-    return x, y
+    match n % 4:
+        case 0: return x, y
+        case 1: return (h-1) - y, x
+        case 2: return (w-1) - x, (h-1) - y
+        case 3: return y, (w-1) - x
 
 
 def iterate(f, it):
@@ -35,7 +35,7 @@ def simulate(grids, initial_pos, track_visited=True):
     ends_seen = set()
     positions_seen = set()
     for i in cycle([-1, 0, 1, 2]):
-        hit = grids[0][y].find("#", x)
+        hit = grids[0][y].find("#", x+1)
 
         if track_visited:
             positions_seen.update(
