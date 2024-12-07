@@ -40,7 +40,7 @@ def simulate(grids, w, h, x, y, track_visited):
         x = hit - 1
 
         # rotate ccw
-        x, y = rotate_pos(w, h, x, y)
+        x, y = y, (w-1) - x
         w, h = h, w
 
     return positions_seen, False
