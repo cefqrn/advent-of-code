@@ -83,9 +83,12 @@ do
   dposi=$(((dposi + 1) % 4))
   dpos=${dposa[dposi]}
 done
-echo ${#seen[*]}
+
+seen_count=${#seen[*]}
+echo $seen_count
 
 n=$((w * h))
+j=0
 p2=0
 for ((i=0; i < n; ++i)); do
   if [ -z "${seen[i]}" ] || [ $i -eq "$ipos" ]; then
@@ -97,6 +100,8 @@ for ((i=0; i < n; ++i)); do
     : $((p2++))
   fi
   grid="${grid::i}.${grid:i+1}"
+
+  echo -ne "\r\033[J$((++j)) / $seen_count  - $p2"
 done
 
-echo $p2
+echo -e "\r\033[J$p2"
