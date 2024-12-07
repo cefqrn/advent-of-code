@@ -43,7 +43,7 @@ def simulate(grids, initial_pos, track_visited=True):
                 for nx in range(x, h if hit == -1 else hit)
             )
 
-        end = (rotate_pos(w, h, hit-1, y, i), i)
+        end = (i, x, y)
         if end in ends_seen:
             return positions_seen, True
 
