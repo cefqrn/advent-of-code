@@ -22,7 +22,7 @@ fetch() {
   day="$1"
 
   # arithmetic expansion gets rid of leading 0s
-  input_url="https://adventofcode.com/$YEAR/day/$((day))/input"
+  input_url="https://adventofcode.com/$YEAR/day/$(bc <<<"$day")/input"
 
   # curl does allow for using a filename but it uses a format
   # that's much more complicated than just key=value
