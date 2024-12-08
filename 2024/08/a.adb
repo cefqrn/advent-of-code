@@ -115,8 +115,8 @@ begin
                A : Position := Frequency (I);
                B : Position := Frequency (J);
             begin
-               Find_Antinodes(Antinodes1, Antinodes2, A, A - B);
-               Find_Antinodes(Antinodes1, Antinodes2, B, B - A);
+               Find_Antinodes (Antinodes1, Antinodes2, A, A - B);
+               Find_Antinodes (Antinodes1, Antinodes2, B, B - A);
             end;
          end loop;
       end loop;
