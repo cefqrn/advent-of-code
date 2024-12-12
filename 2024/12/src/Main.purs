@@ -92,7 +92,7 @@ regions :: Grid -> List Region
 regions g
   | isEmpty g = Nil
   | otherwise = let r = region g (peek g) in
-    r : regions (difference r g)
+      r : regions (difference r g)
 
 area :: Region -> Int
 area = size
