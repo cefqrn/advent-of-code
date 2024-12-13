@@ -7,7 +7,7 @@
   https://stackoverflow.com/questions/65698897/how-to-change-the-node-stack-limit-for-spago
 
   run with
-    spago build && node --stack-size=999999 -e 'require("./output/Main/index").main()'
+    spago build && node --stack-size=999999 -e 'import { main } from "./output/Main/index.js"; main()'
 -}
 
 module Main where
