@@ -30,7 +30,7 @@ fetch() {
   # so... cat :D
   cookie="$(cat "$COOKIE_FILE")"
 
-  curl -A "$USER_AGENT" -b "$cookie" "$input_url" > "$day/input"
+  curl -A "$USER_AGENT" -b "$cookie" -o "$day/input" "$input_url"
 }
 
 format_day() {
