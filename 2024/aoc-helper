@@ -3,6 +3,7 @@
 : "${YEAR:=2024}"
 
 COOKIE_FILE=".cookie"
+USER_AGENT="github.com/cefqrn/advent-of-code/blob/main/2024/aoc-helper by cef"'q'"rn""@gmail.com"
 
 INITIAL_FILE="a.py"
 TEMPLATE_FILE="template.py"
@@ -29,7 +30,7 @@ fetch() {
   # so... cat :D
   cookie="$(cat "$COOKIE_FILE")"
 
-  curl -b "$cookie" "$input_url" > "$day/input"
+  curl -A "$USER_AGENT" -b "$cookie" "$input_url" > "$day/input"
 }
 
 format_day() {
