@@ -82,11 +82,8 @@ fun solve(initial: Map<String, Int>, gates: MutableMap<String, Gate>, maxSwaps: 
             swap(gates, a, b)
             val newZ = gate.evaluate(initial, gates)
             var otherSwaps: List<String>? = null
-            if (newZ != null) {
-                // `and` isn't lazy
-                if (newZ.toLong() xor (target shr correct).lsb == 0L) {
-                    otherSwaps = solve(initial, gates, maxSwaps - 1)
-                }
+            if (newZ != null && newZ.toLong() xor (target shr correct).lsb == 0L) {
+                otherSwaps = solve(initial, gates, maxSwaps - 1)
             }
             swap(gates, b, a)
 
@@ -143,14 +140,14 @@ data class Gate(val op: Operator, val l: String, val r: String) {
         val counts = mutableMapOf<Operator, Int>(And to 0, Or to 0, Xor to 0)
         counts[op] = 1
 
-        if ((l !in initial) and (l !in newSeen)) {
+        if (l !in initial && l !in newSeen) {
             newSeen.add(l)
             for ((k, v) in gates[l]!!.countOps(initial, gates, newSeen)) {
                 counts[k] = counts[k]!! + v
             }
         }
 
-        if ((r !in initial) and (r !in newSeen)) {
+        if (r !in initial && r !in newSeen) {
             newSeen.add(r)
             for ((k, v) in gates[r]!!.countOps(initial, gates, newSeen)) {
                 counts[k] = counts[k]!! + v
@@ -163,12 +160,12 @@ data class Gate(val op: Operator, val l: String, val r: String) {
     fun getInputs(initial: Map<String, Int>, gates: Map<String, Gate>, seen: Set<String>?=null): Set<String> {
         val newSeen = seen?.toMutableSet() ?: mutableSetOf()
 
-        if ((l !in initial) and (l !in newSeen)) {
+        if (l !in initial && l !in newSeen) {
             newSeen.add(l)
             newSeen.addAll(gates[l]!!.getInputs(initial, gates, newSeen))
         }
 
-        if ((r !in initial) and (r !in newSeen)) {
+        if (r !in initial && r !in newSeen) {
             newSeen.add(r)
             newSeen.addAll(gates[r]!!.getInputs(initial, gates, newSeen))
         }
