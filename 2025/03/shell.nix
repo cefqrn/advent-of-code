@@ -2,5 +2,9 @@ let pkgs = import <nixpkgs> {}; in
 pkgs.mkShell {
   packages = with pkgs; [
     ruby
+    rustc
+    cargo
+    clippy
+    rustfmt
   ];
 }
