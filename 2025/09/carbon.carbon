@@ -7,7 +7,34 @@
 import Core library "io";
 import Core library "range";
 
-var k: i32 = 8;
+impl char as Core.As(i32) {
+  fn Convert[self: Self]() -> i32 {
+    return (self as u8) as i32;
+  };
+}
+
+fn ReadInt(output: i32*) -> i32 {
+  // consumes the int and one extra character
+  var c: i32 = Core.ReadChar();
+  var result: i32 = 0;
+  while (48 <= c and c < 58) {
+    result = result * 10 + (c - 48);
+    c = Core.ReadChar();
+  }
+
+  *output = result;
+  return c;
+}
+
+fn ReadCoord(output: (i32, i32)*) -> i32 {
+  // consumes the coord and one extra character
+  // returns -2 on failure
+  if (ReadInt(&output->0) != ((',' as char) as i32)) {
+    return -2;
+  }
+
+  return ReadInt(&output->1);
+}
 
 fn Range(start: i32, end: i32) -> Core.IntRange(32) {
   // undefined symbol: _CInclusiveRange.Core
@@ -38,7 +65,7 @@ fn Max(a: i32, b: i32) -> i32 {
   }
 }
 
-fn IsValidRectangle(coordinates: array((i32, i32), 8), i: i32, j: i32) -> bool {
+fn IsValidRectangle(length: i32, coordinates: array((i32, i32), 512), i: i32, j: i32) -> bool {
   let x_bounds: (i32, i32) = (
     Min(coordinates[i].0, coordinates[j].0),
     Max(coordinates[i].0, coordinates[j].0)
@@ -74,8 +101,8 @@ fn IsValidRectangle(coordinates: array((i32, i32), 8), i: i32, j: i32) -> bool {
       }
     }
 
-    a = (a+1) % k;
-    b = (b+1) % k;
+    a = (a+1) % length;
+    b = (b+1) % length;
   }
 
   return true;
@@ -118,22 +145,18 @@ fn PrintI64(n: i64) {
 }
 
 fn Run() -> i32 {
-  let input: array((i32, i32), 8) = (
-    ( 7, 1),
-    (11, 1),
-    (11, 7),
-    ( 9, 7),
-    ( 9, 5),
-    ( 2, 5),
-    ( 2, 3),
-    ( 7, 3)
-  );
+  var input: array((i32, i32), 512);
+  var length: i32 = 0;
+
+  while (ReadCoord(&input[length]) != -2) {
+    ++length;
+  }
 
   var best_p1: i64 = 0;
   var best_p2: i64 = 0;
-  for (i: i32 in Range(0, k)) {
+  for (i: i32 in Range(0, length)) {
     let p: (i32, i32) = input[i];
-    for (j: i32 in Range(i+1, k)) {
+    for (j: i32 in Range(i+1, length)) {
       let q: (i32, i32) = input[j];
 
       let w: i32 = Abs(q.0 - p.0) + 1;
@@ -148,7 +171,7 @@ fn Run() -> i32 {
         best_p1 = area;
       }
 
-      if (IsValidRectangle(input, i, j)) {
+      if (IsValidRectangle(length, input, i, j)) {
         best_p2 = area;
       }
     }
