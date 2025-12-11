@@ -5,5 +5,9 @@ pkgs.mkShell {
     (python3.withPackages (python-pkgs: [
       python-pkgs.z3-solver
     ]))
+    rustc
+    clippy
+    cargo
+    rustfmt
   ];
 }
