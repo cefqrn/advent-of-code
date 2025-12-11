@@ -108,25 +108,19 @@ fn joltage_configuration_cost(joltages: &[u32], buttons: &[Vec<u32>]) -> Option<
         return None;
     }
 
-    let mut joltages_left: Vec<(usize, Vec<&Vec<u32>>)> = vec![];
-    (0..).zip(joltages).for_each(|(i, joltage)| {
-        if *joltage == 0 {
-            return;
-        }
-
-        joltages_left.push((
-            i,
-            allowed
-                .iter()
-                .copied()
-                .filter(|button| button[i] > 0)
-                .collect(),
-        ));
-    });
-
     // get joltages with least conflicts first
-    let (current_joltage, relevant_buttons) = joltages_left
-        .into_iter()
+    let (current_joltage, relevant_buttons) = (0..joltages.len())
+        .filter(|i| joltages[*i] > 0)
+        .map(|i| {
+            (
+                i,
+                allowed
+                    .iter()
+                    .filter(|button| button[i] > 0)
+                    .copied()
+                    .collect::<Vec<&Vec<u32>>>(),
+            )
+        })
         .min_by_key(|(_, buttons)| buttons.len())?;
 
     let mut left = vec![(0, 0, joltages.to_vec())];
@@ -150,17 +144,21 @@ fn joltage_configuration_cost(joltages: &[u32], buttons: &[Vec<u32>]) -> Option<
         }
 
         let button = relevant_buttons[button_index];
-        for pushes in 0.. {
-            let Some(new_joltages) = amounts
-                .iter()
-                .zip(button)
-                .map(|(joltage, added)| joltage.checked_sub(added * pushes))
-                .collect::<Option<Vec<u32>>>()
-            else {
-                break;
-            };
+        let mut new_joltages = amounts;
+        let mut new_cost = cost;
+        loop {
+            left.push((new_cost, button_index + 1, new_joltages.clone()));
 
-            left.push((cost + pushes, button_index + 1, new_joltages));
+            new_joltages = match new_joltages
+                .into_iter()
+                .zip(button)
+                .map(|(joltage, added)| joltage.checked_sub(*added))
+                .collect::<Option<Vec<u32>>>()
+            {
+                Some(joltages) => joltages,
+                None => break,
+            };
+            new_cost += 1;
         }
     }
 
@@ -194,13 +192,17 @@ fn main() {
         .expect("input contained unsatisfiable diagram");
 
     let left = Arc::new(Mutex::new(machines.len()));
-    let p2 = machines.par_iter()
+    let p2 = machines
+        .par_iter()
         .map(|m| {
             let now = Instant::now();
             let result = joltage_configuration_cost(&m.joltages, &m.buttons);
             let mut left = left.lock().unwrap();
             *left -= 1;
-            println!("{result:?} - found in {:?} ({left} left): {m:?}", now.elapsed());
+            println!(
+                "{result:?} - found in {:?} ({left} left): {m:?}",
+                now.elapsed()
+            );
             println!();
 
             result
