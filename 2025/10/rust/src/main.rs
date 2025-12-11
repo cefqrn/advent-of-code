@@ -9,7 +9,7 @@ use rayon::prelude::*;
 #[derive(Debug)]
 struct Machine {
     diagram: Vec<bool>,
-    buttons: Vec<Vec<u32>>,
+    buttons: Vec<Vec<bool>>,
     joltages: Vec<u32>,
 }
 
@@ -47,11 +47,11 @@ impl FromStr for Machine {
 
                 Some(
                     (0..joltages.len().try_into().ok()?)
-                        .map(|i| button.contains(&i).into())
+                        .map(|i| button.contains(&i))
                         .collect(),
                 )
             })
-            .collect::<Option<Vec<Vec<u32>>>>()
+            .collect::<Option<Vec<Vec<bool>>>>()
             .ok_or_else(|| s.to_string())?;
 
         Ok(Self {
@@ -88,19 +88,19 @@ fn light_configuration_cost(diagram: &[bool], buttons: &[Vec<bool>]) -> Option<u
     }
 }
 
-fn joltage_configuration_cost(joltages: &[u32], buttons: &[Vec<u32>]) -> Option<u32> {
+fn joltage_configuration_cost(joltages: &[u32], buttons: &[Vec<bool>]) -> Option<u32> {
     let avoided: Vec<bool> = joltages.iter().map(|required| *required == 0).collect();
     if avoided.iter().all(|x| *x) {
         return Some(0);
     }
 
-    let allowed: Vec<&Vec<u32>> = buttons
+    let allowed: Vec<&Vec<bool>> = buttons
         .iter()
         .filter(|button| {
             button
                 .iter()
                 .zip(&avoided)
-                .all(|(x, should_avoid)| !*should_avoid || (*x == 0))
+                .all(|(x, should_avoid)| !*should_avoid || !*x)
         })
         .collect();
 
@@ -116,9 +116,9 @@ fn joltage_configuration_cost(joltages: &[u32], buttons: &[Vec<u32>]) -> Option<
                 i,
                 allowed
                     .iter()
-                    .filter(|button| button[i] > 0)
+                    .filter(|button| button[i])
                     .copied()
-                    .collect::<Vec<&Vec<u32>>>(),
+                    .collect::<Vec<&Vec<bool>>>(),
             )
         })
         .min_by_key(|(_, buttons)| buttons.len())?;
@@ -152,7 +152,7 @@ fn joltage_configuration_cost(joltages: &[u32], buttons: &[Vec<u32>]) -> Option<
             new_joltages = match new_joltages
                 .into_iter()
                 .zip(button)
-                .map(|(joltage, added)| joltage.checked_sub(*added))
+                .map(|(joltage, added)| joltage.checked_sub(u32::from(*added)))
                 .collect::<Option<Vec<u32>>>()
             {
                 Some(joltages) => joltages,
@@ -179,15 +179,7 @@ fn main() {
 
     let p1 = machines
         .iter()
-        .map(|m| {
-            light_configuration_cost(
-                &m.diagram,
-                &m.buttons
-                    .iter()
-                    .map(|button| button.iter().map(|x| *x != 0).collect())
-                    .collect::<Vec<Vec<bool>>>(),
-            )
-        })
+        .map(|m| light_configuration_cost(&m.diagram, &m.buttons))
         .sum::<Option<u32>>()
         .expect("input contained unsatisfiable diagram");
 
