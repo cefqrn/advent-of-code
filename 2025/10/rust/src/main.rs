@@ -147,17 +147,22 @@ fn joltage_configuration_cost(joltages: &[u32], buttons: &[Vec<bool>]) -> Option
         let mut new_joltages = amounts;
         let mut new_cost = cost;
         loop {
+            if new_joltages
+                .iter()
+                .zip(button)
+                .any(|(joltage, x)| *joltage == 0 && *x)
+            {
+                left.push((new_cost, button_index + 1, new_joltages));
+                break;
+            }
+
             left.push((new_cost, button_index + 1, new_joltages.clone()));
 
-            new_joltages = match new_joltages
+            new_joltages = new_joltages
                 .into_iter()
                 .zip(button)
-                .map(|(joltage, added)| joltage.checked_sub(u32::from(*added)))
-                .collect::<Option<Vec<u32>>>()
-            {
-                Some(joltages) => joltages,
-                None => break,
-            };
+                .map(|(joltage, added)| joltage - u32::from(*added))
+                .collect();
             new_cost += 1;
         }
     }
