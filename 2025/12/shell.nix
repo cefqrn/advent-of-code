@@ -5,6 +5,7 @@
 let pkgs = import <nixpkgs> {}; in
 pkgs.mkShell {
   packages = [
+    pkgs.ocaml
     (pkgs.stdenv.mkDerivation {
       pname = "python";
       version = "0.9.1";
