@@ -9,5 +9,6 @@ pkgs.mkShell {
     clippy
     cargo
     rustfmt
+    ocaml
   ];
 }
